@@ -1,0 +1,24 @@
+:root {
+    --background: black;
+    --text: white;
+    --height: 1vh;
+    --textsize: 1.8vw;
+}
+
+* {
+    white-space: pre;
+    font-family: Monaco, monospace;
+}
+
+body, div {
+    color: var(--text);
+    background-color: var(--background);
+    font-size: var(--textsize);
+}
+
+body {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
