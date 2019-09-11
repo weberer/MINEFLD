@@ -259,6 +259,27 @@ var show_board = function() {
 };
 
 var get_guess = function() {
+
+    let startingWritePos = 65;
+    let getKeyCallback = function(e) {
+        if(e.code !== _enterKeyCode && e.code !== _numpadEnterKeyCode)
+        {
+            writeAt(startingWritePos++, 10, e.key);
+            writeAt(startingWritePos, 10, "_");
+            getKey(getKeyCallback);
+        }
+        else
+            submit();
+    };
+
+    writeAt(65, 9, "Move (eg A10X)?");
+    writeAt(startingWritePos, 10, "_");
+    getKey(getKeyCallback);
+
+    var submit = () => {
+        writeAt(65, 12, "SUBMIT!"); //TODO: REMOVE ME, Get text. Remove Logged Text (write substring of line excluding input to console)
+    };
+
     /*
     * gotoxy(65,9);write('Move (eg A10X)?');
   repeat
@@ -300,8 +321,7 @@ var run = function() {
     seed_mines();
     //while (!done) {
         drawBoard();
-        writeAt(65, 9, "Move (eg A10X)?");
-       // get_guess();
+        get_guess();
 
    // }
     //drawBoard();
