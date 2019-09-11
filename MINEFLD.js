@@ -170,7 +170,7 @@ function create2dArray(x, y) {
 function isAlphaNumeric(keyCode) {
     if(keyCode >= 48 && keyCode < 58) // Numbers
         return String.fromCharCode(keyCode);
-    else if(keyCode >= 65 && keyCode < 90) // Capital Letters
+    else if(keyCode === 63 || (keyCode >= 65 && keyCode < 90)) // '?' and Capital Letters
         return String.fromCharCode(keyCode);
     else if(keyCode >= 97 && keyCode < 123)// Lower Case Letters
         return String.fromCharCode(keyCode).toUpperCase();

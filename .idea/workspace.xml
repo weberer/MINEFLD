@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MINEFLD.css" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MINEFLD.js" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -30,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MINEFLD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="371" lean-forward="true" selection-start-line="371" selection-end-line="371" />
+            <state relative-caret-position="165">
+              <caret line="171" column="44" lean-forward="true" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
               <folding>
                 <element signature="e#1895#1896#0" expanded="true" />
                 <element signature="e#1930#1931#0" expanded="true" />
@@ -63,7 +62,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>function writeln</find>
       <find>there are</find>
       <find>gotoline(</find>
       <find>writeln</find>
@@ -93,6 +91,7 @@
       <find>get_gu</find>
       <find>submit</find>
       <find>ch</find>
+      <find>lr</find>
     </findStrings>
     <replaceStrings>
       <replace>writeln</replace>
@@ -343,7 +342,7 @@
       <updated>1568050412636</updated>
       <workItem from="1568050418136" duration="20789000" />
       <workItem from="1568150472424" duration="10030000" />
-      <workItem from="1568207562470" duration="18513000" />
+      <workItem from="1568207562470" duration="18992000" />
     </task>
     <task id="LOCAL-00001" summary="Created MINEFLD game repository.">
       <created>1568088871465</created>
@@ -366,11 +365,18 @@
       <option name="project" value="LOCAL" />
       <updated>1568170970048</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Updates to get_guess function.">
+      <created>1568245550549</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1568245550549</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49332000" />
+    <option name="totallyTimeSpent" value="49811000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
@@ -418,7 +424,8 @@
     <MESSAGE value="Created MINEFLD game repository." />
     <MESSAGE value="Committed HTML and JS code" />
     <MESSAGE value="Fixed minor issue with screen rendering.&#10;Added ability to draw character at x,y position.&#10;Updated getKey function to make it more generic.&#10;Began using 'run' method to start game-play." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed minor issue with screen rendering.&#10;Added ability to draw character at x,y position.&#10;Updated getKey function to make it more generic.&#10;Began using 'run' method to start game-play." />
+    <MESSAGE value="Updates to get_guess function." />
+    <option name="LAST_COMMIT_MESSAGE" value="Updates to get_guess function." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/META-INF/MANIFEST.MF">
@@ -451,8 +458,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MINEFLD.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="371" lean-forward="true" selection-start-line="371" selection-end-line="371" />
+        <state relative-caret-position="165">
+          <caret line="171" column="44" lean-forward="true" selection-start-line="171" selection-start-column="44" selection-end-line="171" selection-end-column="44" />
           <folding>
             <element signature="e#1895#1896#0" expanded="true" />
             <element signature="e#1930#1931#0" expanded="true" />
