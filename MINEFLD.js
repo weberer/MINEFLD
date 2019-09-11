@@ -1,18 +1,21 @@
 let ch,
-    done = false,
+    done,
+    field,
     guess,
-    mine_ct = 25,
+    mine_ct,
     none,
-    score = 0,
-    xx,
-    yy;
+    score;
 
 // game constants
-const screenWidth = 80; //DOS CGA screen width in characters
-const screenHeight = 25; //DOS CGA screen height in characters
-const linePrefix = "display_line_";
-const enterKeyCode = "Enter";
-const renderElement = "content";
+const _screenWidth = 80; //DOS CGA screen width in characters
+const _screenHeight = 25; //DOS CGA screen height in characters
+const _linePrefix = "display_line_";
+const _enterKeyCode = "Enter";
+const _numpadEnterKeyCode = "NumpadEnter";
+const _ascii_a = 64;
+const _renderElement = "content";
+const _num_rows = 15;
+const _num_columns = 10;
 
 // display rendering characters
 const char_t = "┬"; //C2
@@ -37,10 +40,10 @@ const cube_bottom_center = char_bottom_center + char_bottom + char_bottom + char
 let displayNextWriteLine = 0;
 
 function createDisplay() { //Tested
-    const parent = document.getElementById(renderElement);
+    const parent = document.getElementById(_renderElement);
     let html = "";
-    for(let i = 0; i < screenHeight; i++)
-        html += "<div id='" + linePrefix + i + "'></div>";
+    for(let i = 0; i < _screenHeight; i++)
+        html += "<div id='" + _linePrefix + i + "'></div>";
 
     parent.innerHTML = html;
 }
@@ -63,7 +66,7 @@ function clrscr() { //Tested
     gotoLine(0);
 
     // clear screen by setting line to empty string
-    for(let i = 0; i < screenHeight; i++)
+    for(let i = 0; i < _screenHeight; i++)
         writeln("");
 }
 
@@ -71,8 +74,8 @@ function writeln(content, lineNum) { //Tested
     if(lineNum) {
         if (typeof lineNum !== "number")
             throw "lineNum parameter must be of type number";
-        else if (lineNum >= screenHeight)
-            throw "lineNum must be less than " + (screenHeight - 1);
+        else if (lineNum >= _screenHeight)
+            throw "lineNum must be less than " + (_screenHeight - 1);
         else
             gotoLine(lineNum);
     }
@@ -80,35 +83,53 @@ function writeln(content, lineNum) { //Tested
         content = " ";
 
     // write content to screen, and move to next line
-    let element = document.getElementById(linePrefix + displayNextWriteLine++);
-    element.innerHTML = content;
+    let element = document.getElementById(_linePrefix + displayNextWriteLine++);
+    element.innerHTML = content.padEnd(_screenWidth);
 
     // if next line is greater than max screen lines, goto first screen line.
-    if(getCurrentLine() >= screenHeight)
+    if(getCurrentLine() >= _screenHeight)
         gotoLine (0);
 }
 
-function getKey(callback) {
+function writeAt(xPos, yPos, text) {
+    let previousLine = getCurrentLine(); //TODO: Remove, shouldn't be needed. Kept just in case
+    gotoLine(yPos);
+    let line = document.getElementById(_linePrefix + yPos);
+    let content = line.innerHTML; // Get text of specified line
 
-    let keypressCallback = (e) => {
-        if(e.code === enterKeyCode)
-        {
-            document.removeEventListener("keypress", keypressCallback, false);
-            callback();
-        }
-    };
+    // Break content into '3' parts, 1. Port before the new text 2. Part replaced by new text (not saved)
+    // 3. Part after new text
+    let contentBefore = content.substr(0, xPos);
+    let contentAfter = content.substr(xPos +text.length);
 
-    document.addEventListener("keypress", keypressCallback, false);
+    // Combine part 1, text, and part 3. Update line content.
+    content = contentBefore + text + contentAfter;
+    line.innerHTML = content;
 }
 
-var create2dArray = function(x, y) {
-    var returnArray = new Array(x);
-    for (var i = 0; i < x; i++)
-        returnArray[i] = new Array(y);
-    return returnArray;
-};
+function getKey(callback) {
+    let keypressCallback = (e) => {
+        document.removeEventListener("keypress", keypressCallback, false);
+        callback(e);
+    };
 
-var field = create2dArray(10, 15);
+    document.addEventListener("keypress", keypressCallback , false);
+}
+
+function create2dArray(x, y) {
+    let returnArray = [];
+    let tempArr = [];
+
+    // Create an array of blank strings of lank y
+    for(let i = 0; i < y; i++)
+        tempArr.push(" ");
+
+    // fill return array with x copies of tempArray
+    for (let i = 0; i < x; i++)
+        returnArray.push(tempArr.slice()); // Add a copy of tempArr to returnArr
+
+    return returnArray;
+}
 
 var neighbors = function() {
     let ii, jj, ct;
@@ -142,56 +163,58 @@ var neighbors = function() {
     }
 };
 
-var drawBoard = function() {
-
+function drawBoard() {
+    clrscr();
     writeln("     There are " + mine_ct + " mines.   SCORE : " + score + " [MAX 150]");
     writeln("    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15");
     writeln("  " + cube_top_left + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top_right);
 
     for (let i = 1; i <= 9; i++) {
-        writeln(String.fromCharCode(64 + i) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │");
+        writeln(String.fromCharCode(_ascii_a + i) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │");
         writeln("  " + cube_left + cube_center + cube_center + cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center + char_right);
     }
 
     gotoLine(getCurrentLine() -1 );
     writeln("  " + cube_bottom_left + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center  + char_bottom_right);
-};
-
+}
 
 var draw_posn = function() {
     var ii, jj;
     for (ii = 0; ii < 10; ii++) {
         for (jj = 0; jj < 15; jj++) {
             if (guess[ii][jj] !== 0) {
-                writeln("Gotoxy(" + jj * 4 + 1 + "," + ii * 2 + 2 + ");");
-                writeln("TextColor(guess[ii][jj])");
-                writeln("write(field[ii][jj]");
+                console.log("Gotoxy(" + jj * 4 + 1 + "," + ii * 2 + 2 + ");");
+                console.log("TextColor(guess[ii][jj])");
+                console.log("write(field[ii][jj]");
             }
         }
     }
 };
 
-var seed_mines = function() {
-    var ii, jj;
+function seed_mines() {
+    for (let i = 0; i < _num_columns; i++) {
+        for (let j = 0; j < _num_rows; j++) {
+            field[i][j] = " ";
+        }
+    }
 
-    for (ii = 1; ii <= 10; ii++) {
-        for (jj = 1; jj <= 15; jj++) {
-            field[ii][jj] = " ";
+    for (let i = 0; i < _num_columns; i++) {
+        for (let j = 0; j < _num_rows; j++) {
+            guess[i][j] = 0;
         }
     }
-    for (ii = 1; ii <= 10; ii++) {
-        for (jj = 1; jj <= 15; jj++) {
-            guess[ii][jj] = 0;
+
+    for (let i = 0; i < mine_ct; i++) {
+        let x = getRandom(0, _num_columns),
+            y = getRandom(0, _num_rows);
+        while (field[x][y] !== ' ') {
+            x = getRandom(0, _num_columns);
+            y = getRandom(0, _num_rows);
         }
+        field[x][y] = "*";
     }
-    for (ii = 1; ii <= mine_ct; ii++) {
-        while (field[xx][yy] !== ' ') {
-            xx = getRandom(1, 10);
-            yy = getRandom(1, 15);
-        }
-        field[xx][yy] = String.fromCharCode(15);
-    }
-};
+    console.log(field); //TODO: Remove Logging
+}
 
 var check_empty = function(du, rl) {
     if (du > 0 && du < 11 && rl > 0 && rl < 15) {
@@ -235,15 +258,54 @@ var show_board = function() {
     }
 };
 
+var get_guess = function() {
+    /*
+    * gotoxy(65,9);write('Move (eg A10X)?');
+  repeat
+    gotoxy(66,10);clreol;readln(choice);flag:=' ';
+    ch:=Upcase(choice[1]);ud:=100;lr:=100;
+    choice:=copy(choice,2,length(choice)-1);
+    if choice[length(choice)] in ['0'..'9'] then begin end
+    else begin
+      flag:=upcase(choice[length(choice)]);
+      choice:=copy(choice,1,(length(choice)-1))
+    end;
+    Val(choice,lr,fg);if fg<>0 then lr:=100;
+    if ord(ch)>63 then ud:=(ord(ch)-64) else ud:=100;
+    ok:=(flag in [' ','?','M'])and(guess[ud,lr]=0)and
+                         (ud>0)and(ud<11)and(lr>0)and(lr<16);
+    if not ok then begin sound(220);delay(200);nosound end;
+  until ok;
+(*  gotoxy(66,10);clreol;write(ch,' ',ud,'/',lr,' ',flag,'?'); *)
+  guess[ud,lr]:=3;
+  case flag of
+    ' ' : if field[ud,lr]=chr(15) then begin
+            done:=true;show_board;
+          end else check_empty(ud,lr);
+    '?' : field[ud,lr]:='?';
+    'M' : if field[ud,lr]<>chr(15) then begin
+            done:=true;show_board
+          end else begin inc(score);guess[ud,lr]:=4 end;
+  end;
+  if not done then done:=(score=150)
+  * */
+};
+
 var run = function() {
     score = 0;
+    mine_ct = 25;
+    done = false;
+    field = create2dArray(10, 15);
+    guess = create2dArray(10, 15);
     seed_mines();
-    while (!done) {
+    //while (!done) {
         drawBoard();
-        get_guess();
-    }
-    draw_board();
-}
+        writeAt(65, 9, "Move (eg A10X)?");
+       // get_guess();
+
+   // }
+    //drawBoard();
+};
 
 let instructions = function() {
     clrscr();
@@ -269,13 +331,12 @@ let instructions = function() {
 };
 
 var startGame = function() {
-    //clearscreen
-    randomize();
+    clrscr();
     instructions();
     while (!done) {
         run();
         if (score === 150) {
-            //clearscreen
+            clrscr();
             writeln("WELL DONE!");
         }
         writeln("Play again?");
@@ -290,17 +351,24 @@ var startGame = function() {
     writeln("Thanks for the game.  See you again soon....");
 };
 
-var getRandom = function(min, max) {
-    Math.floor(Math.random() * (max - min)) + min;
-};
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
 
 //Begin game after document is loaded.
 document.addEventListener("DOMContentLoaded", function(event)
 {
+    let getKeyCallback = function(e) {
+        if(e.code === _enterKeyCode || e.code === _numpadEnterKeyCode)
+            run();
+        else
+        {
+            console.log("Key: " + e.code);
+            getKey(getKeyCallback);
+        }
+    };
+
     createDisplay();
     instructions();
-    getKey(() => {
-        clrscr();
-        drawBoard();
-    });
+    getKey(getKeyCallback);
 });
