@@ -12,10 +12,12 @@ const _screenHeight = 25; //DOS CGA screen height in characters
 const _linePrefix = "display_line_";
 const _enterKeyCode = "Enter";
 const _numpadEnterKeyCode = "NumpadEnter";
+const _backspaceKeyCode = "Backspace";
 const _ascii_a = 64;
 const _renderElement = "content";
 const _num_rows = 15;
 const _num_columns = 10;
+const _input_x_location = 65;
 
 // display rendering characters
 const char_t = "┬"; //C2
@@ -108,12 +110,39 @@ function writeAt(xPos, yPos, text) {
 }
 
 function getKey(callback) {
-    let keypressCallback = (e) => {
-        document.removeEventListener("keypress", keypressCallback, false);
+    let keydownCallback = (e) => {
+        document.removeEventListener("keydown", keydownCallback, false);
         callback(e);
     };
 
-    document.addEventListener("keypress", keypressCallback , false);
+    document.addEventListener("keydown", keydownCallback , false);
+}
+
+function readAt(xPos, yPos)
+{
+    // Get text from line @ yPos
+    let line = document.getElementById(_linePrefix + yPos);
+    let content = line.innerHTML;
+    let contentBefore = content.substr(0, xPos);
+
+    // Split content before input location
+    let inputText = content.substr(xPos);
+    // Input data is from inputText[0] to the cursor '_'
+    let inputArr = inputText.split("_");
+
+    // if the length of the array is > 2, the user entered a _ in their string. To fix this, combine all
+    // sections of the input array except the final, adding the _ between
+    if(inputArr.length > 2)
+    {
+        for(let i = 1; i < inputArr.length - 1; i++)
+            inputArr[0] += "_" + inputArr[i];
+    }
+
+    content = contentBefore + "_";
+    gotoLine(yPos);
+    writeln(content);
+
+    return inputArr[0];
 }
 
 function create2dArray(x, y) {
@@ -129,6 +158,24 @@ function create2dArray(x, y) {
         returnArray.push(tempArr.slice()); // Add a copy of tempArr to returnArr
 
     return returnArray;
+}
+
+/**
+ * Determines if keycode represents an alphanumeric character. If so, returns the character associated with the code.
+ * If a lower case character code is passed in, it is converted to upper case.
+ * Returns false if keycode is not alphanumeric
+ * @param keyCode e.code from keydown or keyup event
+ * @returns {string|boolean}  String if number or letter. False otherwise
+ */
+function isAlphaNumeric(keyCode) {
+    if(keyCode >= 48 && keyCode < 58) // Numbers
+        return String.fromCharCode(keyCode);
+    else if(keyCode >= 65 && keyCode < 90) // Capital Letters
+        return String.fromCharCode(keyCode);
+    else if(keyCode >= 97 && keyCode < 123)// Lower Case Letters
+        return String.fromCharCode(keyCode).toUpperCase();
+    else
+        return false;
 }
 
 var neighbors = function() {
@@ -169,23 +216,29 @@ function drawBoard() {
     writeln("    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15");
     writeln("  " + cube_top_left + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top_right);
 
-    for (let i = 1; i <= 9; i++) {
+    for (let i = 1; i <= _num_columns; i++) {
         writeln(String.fromCharCode(_ascii_a + i) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │");
         writeln("  " + cube_left + cube_center + cube_center + cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center + char_right);
     }
 
     gotoLine(getCurrentLine() -1 );
     writeln("  " + cube_bottom_left + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center  + char_bottom_right);
+
+    draw_posn();
+    // Draw input prompt and cursor
+    writeAt(_input_x_location, 9, "Move (eg A10X)?");
+    writeAt(_input_x_location, 10, "_");
 }
 
 var draw_posn = function() {
-    var ii, jj;
-    for (ii = 0; ii < 10; ii++) {
-        for (jj = 0; jj < 15; jj++) {
-            if (guess[ii][jj] !== 0) {
-                console.log("Gotoxy(" + jj * 4 + 1 + "," + ii * 2 + 2 + ");");
-                console.log("TextColor(guess[ii][jj])");
-                console.log("write(field[ii][jj]");
+    // Offsets to position characters in the center of grids
+    const _x_offset = 4,
+          _y_offset = 3;
+
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 15; j++) {
+            if (guess[i][j] !== 0) {
+                writeAt((j* 4 + _x_offset), (i * 2 + _y_offset), field[i][j]); //TODO: Add ability to color text
             }
         }
     }
@@ -247,69 +300,113 @@ var check_empty = function(du, rl) {
     }
 };
 
-var show_board = function() {
-    var ii, jj;
-    for (ii = 1; ii <= 10; ii++) {
-        for (jj = 1; jj <= 15; jj++) {
-            if (guess[ii][jj] === 0) {
-                guess[ii][jj] = 15;
-            }
-        }
-    }
-};
+function show_board() {
+    for (let i = 0; i < _num_columns; i++)
+        for (let j = 0; j < _num_rows; j++)
+            if (guess[i][j] === 0)
+                guess[i][j] = 15;
+}
 
 var get_guess = function() {
-
-    let startingWritePos = 65;
+    let startingWritePos = _input_x_location;
     let getKeyCallback = function(e) {
-        if(e.code !== _enterKeyCode && e.code !== _numpadEnterKeyCode)
+        if(e.code === _enterKeyCode || e.code === _numpadEnterKeyCode)
+            submit();
+        else
         {
-            writeAt(startingWritePos++, 10, e.key);
-            writeAt(startingWritePos, 10, "_");
+            let alphaNumeric = false;
+            // If more than one letter returned, key is not a char or digit
+            if(e.key.length === 1)
+                alphaNumeric = isAlphaNumeric(e.key.charCodeAt(0));
+
+            if(e.code === _backspaceKeyCode) // backspace
+            {
+                // On backspace press, remove previous character if there are characters present
+                if(startingWritePos > _input_x_location) {
+                    writeAt(startingWritePos--, 10, " ");
+                    writeAt(startingWritePos, 10, "_");
+                }
+            }
+            else if(alphaNumeric) // 0-9, A-Z
+            {
+                writeAt(startingWritePos++, 10, e.key);
+                writeAt(startingWritePos, 10, "_");
+            }
             getKey(getKeyCallback);
         }
+    };
+
+function submit() {
+        let ok,
+            row,
+            column,
+            flag = " ";
+
+        let choice = readAt(_input_x_location, 10);
+        // get first character of choice
+        let ch = choice.charAt(0).toUpperCase();
+
+        // Remove first character (stored in row) from choice
+        choice = choice.substring(1);
+        let choiceFinalChar = choice.charAt(choice.length - 1 );
+        // if the last character of choice is not a digit
+
+        if(!parseInt(choiceFinalChar))
+            flag = choiceFinalChar.toUpperCase();
+
+        column = parseInt(choice);
+        if(!column)
+            column = 100;
+        else column--;
+
+        if(ch.charCodeAt(0) > 64)
+            row = ch.charCodeAt(0) - 65;
         else
-            submit();
-    };
+            row = 100;
 
-    writeAt(65, 9, "Move (eg A10X)?");
-    writeAt(startingWritePos, 10, "_");
+        ok = (flag === " " || flag === "?" || flag === "M") && guess[row][column] === 0 && row >= 0 && row < 11 && column >= 0 && column < 16;
+        if(!ok)
+        {
+            //Play a sound
+        }
+
+        if(!ok)
+            get_guess();
+        else {
+            guess[row][column] = 3;
+
+            switch (flag) {
+                case " ":
+                    if (field[row][column] === String.fromCharCode(15)) {
+                        done = true;
+                        show_board();
+                    } else
+                        check_empty(row, column);
+                    break;
+
+                case "?":
+                    field[row][column] = "?";
+                    break;
+
+                case "M":
+                    if (field[row][column] !== String.fromCharCode(15)) {
+                        done = true;
+                        show_board();
+                    } else {
+                        score++;
+                        guess[row][column] = 4;
+                    }
+                    break;
+            }
+            console.log(guess); //TODO: Remove Me
+
+            if (!done) {
+                done = (score === 150);
+                get_guess();
+            }
+        }
+    };
     getKey(getKeyCallback);
-
-    var submit = () => {
-        writeAt(65, 12, "SUBMIT!"); //TODO: REMOVE ME, Get text. Remove Logged Text (write substring of line excluding input to console)
-    };
-
-    /*
-    * gotoxy(65,9);write('Move (eg A10X)?');
-  repeat
-    gotoxy(66,10);clreol;readln(choice);flag:=' ';
-    ch:=Upcase(choice[1]);ud:=100;lr:=100;
-    choice:=copy(choice,2,length(choice)-1);
-    if choice[length(choice)] in ['0'..'9'] then begin end
-    else begin
-      flag:=upcase(choice[length(choice)]);
-      choice:=copy(choice,1,(length(choice)-1))
-    end;
-    Val(choice,lr,fg);if fg<>0 then lr:=100;
-    if ord(ch)>63 then ud:=(ord(ch)-64) else ud:=100;
-    ok:=(flag in [' ','?','M'])and(guess[ud,lr]=0)and
-                         (ud>0)and(ud<11)and(lr>0)and(lr<16);
-    if not ok then begin sound(220);delay(200);nosound end;
-  until ok;
-(*  gotoxy(66,10);clreol;write(ch,' ',ud,'/',lr,' ',flag,'?'); *)
-  guess[ud,lr]:=3;
-  case flag of
-    ' ' : if field[ud,lr]=chr(15) then begin
-            done:=true;show_board;
-          end else check_empty(ud,lr);
-    '?' : field[ud,lr]:='?';
-    'M' : if field[ud,lr]<>chr(15) then begin
-            done:=true;show_board
-          end else begin inc(score);guess[ud,lr]:=4 end;
-  end;
-  if not done then done:=(score=150)
-  * */
 };
 
 var run = function() {
@@ -322,9 +419,9 @@ var run = function() {
     //while (!done) {
         drawBoard();
         get_guess();
-
-   // }
-    //drawBoard();
+        //drawBoard();
+    //}
+    drawBoard();
 };
 
 let instructions = function() {
@@ -338,7 +435,7 @@ let instructions = function() {
     writeln("loose!  If not, you are shown the number of mines in the neighboring squares.");
     writeln();
     writeln("If the square you choose is empty, al adjacent squares will be shown");
-    writeln("immediatley, and all their neighbors if any of them are also empty.");
+    writeln("immediately, and all their neighbors if any of them are also empty.");
     writeln();
     writeln("If you think a mine is present, add 'M' (or 'm') to the end of the address, as");
     writeln("'D7M', or 'f11m', for example. If you are right, the mine will be shown ; if");
@@ -382,10 +479,7 @@ document.addEventListener("DOMContentLoaded", function(event)
         if(e.code === _enterKeyCode || e.code === _numpadEnterKeyCode)
             run();
         else
-        {
-            console.log("Key: " + e.code);
             getKey(getKeyCallback);
-        }
     };
 
     createDisplay();
