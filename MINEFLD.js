@@ -2,7 +2,7 @@
 const _screen_columns = 80; //DOS CGA screen width in characters
 const _screen_rows = 25; //DOS CGA screen height in characters
 const _mine_marker = "*";
-const _empty_marker = "█";
+const _empty_marker = "█"; // ASCII
 const _line_prefix = "display_line_";
 const _enter_key = "Enter";
 const _numpad_enter_key = "NumpadEnter";
@@ -14,10 +14,13 @@ const _num_columns = 15;
 const _num_rows = 10;
 const _input_x_location = 65;
 const _input_screen_row = 10;
+const _sound_frequency = 220; //Hz
+const _sound_delay = 200;  //mS
+const _sound_type = "square";
 
 // display rendering characters
-const char_t = "┬"; //C2
-const char_dash = "─"; //C4
+const char_t = "┬";
+const char_dash = "─";
 const char_top_left_corner = "┌";
 const char_top_right_corner = "┐";
 const char_center = "┼";
@@ -36,17 +39,39 @@ const cube_bottom_left = char_bottom_left + char_bottom + char_bottom + char_bot
 const cube_bottom_center = char_bottom_center + char_bottom + char_bottom + char_bottom;
 
 // Globals
-let ch,
-    displayNextWriteLine = 0,
+let displayNextWriteLine = 0,
     done,
     field,
     guess,
     mine_ct,
-    none,
     score;
 
+// Plays a buzzer sound
+function sound() {
+    let audioCtx = new window.AudioContext();
+    let oscillator = audioCtx.createOscillator();
+
+    // Create oscillator (sound generator), set values start
+    oscillator.type = _sound_type;
+    oscillator.frequency.value = _sound_frequency;
+    oscillator.connect(audioCtx.destination);
+    oscillator.start();
+
+    // Stop playback after _sound_delay ms
+    setTimeout(function () {
+        oscillator.stop();
+    }, _sound_delay);
+}
+
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+// Creates DOM elements used to display content
 function createDisplay() {
-    const parent = document.getElementById(_parent_element);
+    const body = document.getElementsByTagName("body")[0];
+    body.innerHTML = "<div id='" + _parent_element + "'></div>";
+    let parent = body.childNodes[0];
     let html = "";
     for(let i = 0; i < _screen_rows; i++)
         html += "<div id='" + _line_prefix + i + "'></div>";
@@ -233,8 +258,10 @@ function drawBoard() {
     draw_posn();
     neighbors();
     // Draw input prompt and cursor
-    writeAt(_input_x_location, (_input_screen_row - 1), "Move (eg A10X)?");
-    writeAt(_input_x_location, _input_screen_row, "_");
+    if(!done) {
+        writeAt(_input_x_location, (_input_screen_row - 1), "Move (eg A10X)?");
+        writeAt(_input_x_location, _input_screen_row, "_");
+    }
 }
 
 var draw_posn = function() {
@@ -254,6 +281,7 @@ var draw_posn = function() {
     }
 };
 
+// Places mine_ct mines randomly around the board
 function seed_mines() {
     for (let i = 0; i < _num_rows; i++) {
         for (let j = 0; j < _num_columns; j++) {
@@ -276,45 +304,49 @@ function seed_mines() {
         }
         field[x][y] = "*";
     }
-    console.log(field); //TODO: Remove Logging
 }
 
-var check_empty = function(du, rl) {
-    if (du > 0 && du < 11 && rl > 0 && rl < 15) {
+// Checks if square next to current one are empty. Allows for multiple empty squares to be shown w/ a single guess
+function check_empty(yPos, xPos) {
+    if (yPos > -1 && yPos < _num_rows && xPos > -1 && xPos < _num_columns) {
         score++;
-        none = true;
+        let none = false;
         while (!none) {
-            guess[du][rl] = 3;
+            guess[yPos][xPos] = 3;
             none = true;
-            if (field[du][rl] === '�') {
+            if (field[yPos][xPos] === _empty_marker) {
                 none = false;
-                if (guess[du - 1][rl + 1] === 0)
-                    check_empty(du - 1, rl + 1);
-                if (guess[du - 1][rl] === 0)
-                    check_empty(du - 1, rl);
-                if (guess[du - 1][rl - 1] === 0)
-                    check_empty(du - 1, rl - 1);
-                if (guess[du][rl + 1] === 0)
-                    check_empty(du, rl + 1);
-                if (guess[du][rl - 1] === 0)
-                    check_empty(du, rl - 1);
-                if (guess[du + 1][rl - 1] === 0)
-                    check_empty(du + 1, rl - 1);
-                if (guess[du + 1][rl] === 0)
-                    check_empty(du + 1, rl);
-                if (guess[du + 1][rl + 1] === 0)
-                    check_empty(du + 1, rl + 1);
+                if ((yPos - 1 >= 0) && (xPos + 1 < _num_columns) && guess[yPos - 1][xPos + 1] === 0)
+                    check_empty(yPos - 1, xPos + 1);
+                if ((yPos - 1 >= 0) && guess[yPos - 1][xPos] === 0)
+                    check_empty(yPos - 1, xPos);
+                if ((yPos - 1 >= 0) && (xPos - 1 >= 0) && guess[yPos - 1][xPos - 1] === 0)
+                    check_empty(yPos - 1, xPos - 1);
+                if ((xPos + 1 < _num_columns) && guess[yPos][xPos + 1] === 0)
+                    check_empty(yPos, xPos + 1);
+                if ((xPos - 1 >= 0) && guess[yPos][xPos - 1] === 0)
+                    check_empty(yPos, xPos - 1);
+                if ((yPos + 1 < _num_rows) && (xPos - 1 >= 0) && guess[yPos + 1][xPos - 1] === 0)
+                    check_empty(yPos + 1, xPos - 1);
+                if ((yPos + 1 < _num_rows) && guess[yPos + 1][xPos] === 0)
+                    check_empty(yPos + 1, xPos);
+                if ((yPos + 1 < _num_rows) && (xPos + 1 < _num_columns) && guess[yPos + 1][xPos + 1] === 0)
+                    check_empty(yPos + 1, xPos + 1);
                 none = !none;
             }
         }
     }
-};
+}
 
+// Shows the entire board
 function show_board() {
     for (let i = 0; i < _num_rows; i++)
         for (let j = 0; j < _num_columns; j++)
             if (guess[i][j] === 0)
                 guess[i][j] = 15;
+
+    drawBoard();
+    endRound();
 }
 
 function get_guess() {
@@ -376,9 +408,7 @@ function get_guess() {
 
         ok = (flag === " " || flag === "?" || flag === "M") && guess[row][column] === 0 && row > -1 && row <= _num_rows && column > -1 && column <= _num_columns;
         if(!ok)
-        {
-            //Play a sound
-        }
+            sound();
 
         if(!ok)
             get_guess();
@@ -390,7 +420,6 @@ function get_guess() {
                     if (field[row][column] === String.fromCharCode(_ascii_asterisk)) {
                         done = true;
                         show_board();
-                        drawBoard();
                     } else
                         check_empty(row, column);
                     break;
@@ -411,9 +440,15 @@ function get_guess() {
             }
 
             if (!done) {
-                done = (score === 150);
-                drawBoard();
-                get_guess();
+                if(score === 150) {
+                   done = true;
+                   endRound();
+                }
+                else {
+                    drawBoard();
+                    get_guess();
+                }
+
             }
         }
     };
@@ -422,23 +457,9 @@ function get_guess() {
     getKey(getKeyCallback);
 }
 
-var run = function() {
-    score = 0;
-    mine_ct = 25;
-    done = false;
-    field = create2dArray(10, 15);
-    guess = create2dArray(10, 15);
-    seed_mines();
-    //while (!done) {
-        drawBoard();
-        get_guess();
-        //drawBoard();
-    //}
-    drawBoard();
-};
-
-let instructions = function() {
+function instructions() {
     clrscr();
+
     writeln();
     writeln();
     writeln("                              M I N E F I E L D");
@@ -481,9 +502,26 @@ var startGame = function() {
     writeln("Thanks for the game.  See you again soon....");
 };
 
-function getRandom(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+function endRound() {
+    // Print win message
+    if(score === 150)
+        writeAt(65, 9, "WELL DONE!");
+
+    // Prompt to play again
+    writeAt(65, 13, "Play Again?");
+    readAt(65, 14);
 }
+
+var run = function() {
+    score = 0;
+    mine_ct = 25;
+    done = false;
+    field = create2dArray(10, 15);
+    guess = create2dArray(10, 15);
+    seed_mines();
+    drawBoard();
+    get_guess();
+};
 
 //Begin game after document is loaded.
 document.addEventListener("DOMContentLoaded", function(event)
@@ -494,7 +532,6 @@ document.addEventListener("DOMContentLoaded", function(event)
         else
             getKey(getKeyCallback);
     };
-
     createDisplay();
     instructions();
     getKey(getKeyCallback);

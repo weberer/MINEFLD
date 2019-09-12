@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="Added '?' to list of valid input characters">
+    <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MINEFLD.js" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,8 +21,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="12" column="7" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
+            <state relative-caret-position="189">
+              <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -30,13 +30,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MINEFLD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="240" column="60" lean-forward="true" selection-start-line="240" selection-start-column="60" selection-end-line="240" selection-end-column="60" />
+            <state relative-caret-position="41">
+              <caret line="350" lean-forward="true" selection-start-line="350" selection-end-line="350" />
               <folding>
                 <element signature="e#1895#1896#0" expanded="true" />
+                <element signature="e#1928#1929#0" expanded="true" />
+                <element signature="e#2101#2102#0" expanded="true" />
+                <element signature="e#2161#2162#0" expanded="true" />
+                <element signature="e#1895#1896#0" expanded="true" />
                 <element signature="e#1930#1931#0" expanded="true" />
-                <element signature="e#15915#15916#0" expanded="true" />
-                <element signature="e#15975#15976#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -65,11 +67,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>seed_mines =</find>
-      <find>screenHeight</find>
-      <find>seed</find>
-      <find>_enterKey</find>
-      <find>getGuess</find>
       <find>guess</find>
       <find>run</find>
       <find>_</find>
@@ -95,6 +92,11 @@
       <find>field[i][j] =</find>
       <find>write</find>
       <find>writeAt</find>
+      <find>rl</find>
+      <find>todo</find>
+      <find>sound</find>
+      <find>function sound</find>
+      <find>show_board</find>
     </findStrings>
     <replaceStrings>
       <replace>writeln</replace>
@@ -104,6 +106,7 @@
       <replace>keydown</replace>
       <replace>row</replace>
       <replace>neighborX</replace>
+      <replace>xPos</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -115,8 +118,8 @@
       <list>
         <option value="$PROJECT_DIR$/MINEFLD.html" />
         <option value="$PROJECT_DIR$/MINEFLD.ts" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/MINEFLD.css" />
+        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/MINEFLD.js" />
       </list>
     </option>
@@ -346,7 +349,7 @@
       <updated>1568050412636</updated>
       <workItem from="1568050418136" duration="20789000" />
       <workItem from="1568150472424" duration="10030000" />
-      <workItem from="1568207562470" duration="27803000" />
+      <workItem from="1568207562470" duration="32944000" />
     </task>
     <task id="LOCAL-00001" summary="Created MINEFLD game repository.">
       <created>1568088871465</created>
@@ -383,11 +386,18 @@
       <option name="project" value="LOCAL" />
       <updated>1568245924380</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Updates to draw_posn to correct scaling factors&#10;Updates to writeAt to allow numbers to be processed&#10;Updated constant names&#10;Fixed rows/columns constant names being swapped&#10;Updated functions to use constants instead of magic #s&#10;Fixed neighbors function&#10;Removed debug log statements">
+      <created>1568258386806</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1568258386806</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58622000" />
+    <option name="totallyTimeSpent" value="63763000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
@@ -437,7 +447,8 @@
     <MESSAGE value="Fixed minor issue with screen rendering.&#10;Added ability to draw character at x,y position.&#10;Updated getKey function to make it more generic.&#10;Began using 'run' method to start game-play." />
     <MESSAGE value="Updates to get_guess function." />
     <MESSAGE value="Added '?' to list of valid input characters" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added '?' to list of valid input characters" />
+    <MESSAGE value="Updates to draw_posn to correct scaling factors&#10;Updates to writeAt to allow numbers to be processed&#10;Updated constant names&#10;Fixed rows/columns constant names being swapped&#10;Updated functions to use constants instead of magic #s&#10;Fixed neighbors function&#10;Removed debug log statements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updates to draw_posn to correct scaling factors&#10;Updates to writeAt to allow numbers to be processed&#10;Updated constant names&#10;Fixed rows/columns constant names being swapped&#10;Updated functions to use constants instead of magic #s&#10;Fixed neighbors function&#10;Removed debug log statements" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/META-INF/MANIFEST.MF">
@@ -456,8 +467,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="12" column="7" selection-start-line="12" selection-start-column="7" selection-end-line="12" selection-end-column="7" />
+        <state relative-caret-position="189">
+          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -470,13 +481,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MINEFLD.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="240" column="60" lean-forward="true" selection-start-line="240" selection-start-column="60" selection-end-line="240" selection-end-column="60" />
+        <state relative-caret-position="41">
+          <caret line="350" lean-forward="true" selection-start-line="350" selection-end-line="350" />
           <folding>
             <element signature="e#1895#1896#0" expanded="true" />
+            <element signature="e#1928#1929#0" expanded="true" />
+            <element signature="e#2101#2102#0" expanded="true" />
+            <element signature="e#2161#2162#0" expanded="true" />
+            <element signature="e#1895#1896#0" expanded="true" />
             <element signature="e#1930#1931#0" expanded="true" />
-            <element signature="e#15915#15916#0" expanded="true" />
-            <element signature="e#15975#15976#0" expanded="true" />
           </folding>
         </state>
       </provider>
