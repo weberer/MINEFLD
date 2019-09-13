@@ -1,6 +1,13 @@
 //game constants
-const _ascii_a = 64,
+const _ascii_0 = 48,
+      _ascii_9 = 58,
+      _ascii_A = 65,
+      _ascii_Z = 90,
+      _ascii_a = 97,
+      _ascii_z = 122,
+      _ascii_question_mark = 63,
       _backspace_key = "Backspace",
+      _cursor = "_",
       _empty_marker = "█", // ASCII
       _enter_key = "Enter",
       _input_x_location = 65,
@@ -154,8 +161,8 @@ function formatText(text, displayRow) {
 
     // add blinking effect to the cursor
     for(let screenColumn = 0; screenColumn < _screen_columns; screenColumn ++ )
-        if(charArray[screenColumn] === "_")
-            charArray[screenColumn] = "_".blink();
+        if(charArray[screenColumn] === _cursor)
+            charArray[screenColumn] = _cursor.blink();
 
     // Combine into single HTML string to display
     return charArray.join("");
@@ -207,19 +214,19 @@ function getInput(xLocation, screenRow, callback) {
                 // On backspace press, remove previous character if there are characters present
                 if(startingWritePos > xLocation) {
                     writeAt(startingWritePos--,screenRow, " ");
-                    writeAt(startingWritePos, screenRow, "_");
+                    writeAt(startingWritePos, screenRow, _cursor);
                 }
             }
             else if(alphaNumeric) // 0-9, A-Z, ?
             {
                 writeAt(startingWritePos++, screenRow, e.key);
-                writeAt(startingWritePos, screenRow, "_");
+                writeAt(startingWritePos, screenRow, _cursor);
             }
             getKey(getKeyCallback);
         }
     };
     // Show the initial cursor
-    writeAt(xLocation, screenRow, "_");
+    writeAt(xLocation, screenRow, _cursor);
     // Begin execution of readInput function
     getKey(getKeyCallback);
 }
@@ -234,18 +241,18 @@ function readAt(xPos, yPos)
     // Split content before input location
     let inputText = content.substr(xPos);
     // Input data is from inputText[0] to the cursor '_'
-    let inputArr = inputText.split("_");
+    let inputArr = inputText.split(_cursor);
 
     // if the length of the array is > 2, the user entered a _ in their string. To fix this, combine all
     // sections of the input array except the final, adding the _ between
     if(inputArr.length > 2)
     {
         for(let i = 1; i < inputArr.length - 1; i++)
-            inputArr[0] += "_" + inputArr[i];
+            inputArr[0] += _cursor + inputArr[i];
     }
 
     // append the cursor character to the line and write to the display
-    content = contentBefore + "_";
+    content = contentBefore + _cursor;
     gotoLine(yPos);
     writeln(content);
 
@@ -277,11 +284,11 @@ function create2dArray(x, y) {
  * @returns {string|boolean}  String if number or letter. False otherwise
  */
 function isAlphaNumeric(keyCode) {
-    if(keyCode >= 48 && keyCode < 58) // Numbers
+    if(keyCode >= _ascii_0 && keyCode < _ascii_9) // Numbers
         return String.fromCharCode(keyCode);
-    else if(keyCode === 63 || (keyCode >= 65 && keyCode < 90)) // '?' and Capital Letters
+    else if(keyCode === _ascii_question_mark || (keyCode >= _ascii_A && keyCode <_ascii_Z + 1)) // '?' and Capital Letters
         return String.fromCharCode(keyCode);
-    else if(keyCode >= 97 && keyCode < 123)// Lower Case Letters
+    else if(keyCode >= _ascii_a && keyCode < _ascii_z + 1)// Lower Case Letters
         return String.fromCharCode(keyCode).toUpperCase();
     else
         return false;
@@ -338,7 +345,7 @@ function drawBoard() {
 
     // draw middle rows of the grid
     for (let i = 1; i <= _num_rows; i++) {
-        writeln(String.fromCharCode(_ascii_a + i) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │"); // this row will contain the symbols for mines etc.
+        writeln(String.fromCharCode(_ascii_A + i - 1) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │"); // this row will contain the symbols for mines etc.
         writeln("  " + cube_left + cube_center + cube_center + cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center + char_right);
     }
 
@@ -450,8 +457,8 @@ function get_guess() {
             column = 100;                                // be less than expected
         else column--; // aligns column with the field/guess grid
 
-        if(ch.charCodeAt(0) > _ascii_a)
-            row = ch.charCodeAt(0) - _ascii_a - 1; //Subtract 1 more than a to align with array 0 index
+        if(ch.charCodeAt(0) >= _ascii_A)
+            row = ch.charCodeAt(0) - _ascii_A;
         else
             row = 100;
 
@@ -553,7 +560,7 @@ function endRound() {
         writeAt(_input_x_location, 9, "WELL DONE!");
 
     // Prompt to play again
-    writeAt(_input_x_location, 13, "Play Again? " + "_");
+    writeAt(_input_x_location, 13, "Play Again? " + _cursor);
     getKey(processInput);
 }
 
