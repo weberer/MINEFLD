@@ -406,7 +406,7 @@ function get_guess() {
             flag = choiceFinalChar.toUpperCase();
 
         column = parseInt(choice);
-        if(!column)
+        if(column.toString().length + 1 < choice.length)
             column = 100;
         else column--;
 
@@ -415,7 +415,7 @@ function get_guess() {
         else
             row = 100;
 
-        ok = (flag === " " || flag === "?" || flag === "M") && guess[row][column] === 0 && row > -1 && row <= _num_rows && column > -1 && column <= _num_columns;
+        ok = (flag === " " || flag === "?" || flag === "M")  && row > -1 && row <= _num_rows && column > -1 && column <= _num_columns && guess[row][column] === 0;
         if(!ok)
             sound();
 

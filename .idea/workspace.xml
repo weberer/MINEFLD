@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="">
+    <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="Fixed issue allowing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MINEFLD.js" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.js" afterDir="false" />
     </list>
@@ -29,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MINEFLD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="165" column="82" lean-forward="true" selection-start-line="165" selection-start-column="82" selection-end-line="165" selection-end-column="82" />
+            <state relative-caret-position="270">
+              <caret line="408" column="56" selection-start-line="408" selection-start-column="56" selection-end-line="408" selection-end-column="56" />
               <folding>
                 <element signature="e#1895#1896#0" expanded="true" />
                 <element signature="e#1928#1929#0" expanded="true" />
@@ -66,7 +66,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>addEventListener</find>
       <find>getKey</find>
       <find>console.log</find>
       <find>get_gu</find>
@@ -96,6 +95,7 @@
       <find>150</find>
       <find>&quot;_</find>
       <find>getInput</find>
+      <find>choice =</find>
     </findStrings>
     <replaceStrings>
       <replace>writeln</replace>
@@ -350,7 +350,7 @@
       <updated>1568050412636</updated>
       <workItem from="1568050418136" duration="20789000" />
       <workItem from="1568150472424" duration="10030000" />
-      <workItem from="1568207562470" duration="37847000" />
+      <workItem from="1568207562470" duration="40956000" />
     </task>
     <task id="LOCAL-00001" summary="Created MINEFLD game repository.">
       <created>1568088871465</created>
@@ -401,11 +401,25 @@
       <option name="project" value="LOCAL" />
       <updated>1568297413561</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Combined and generalized functions to read input&#10;Added end of game functionality&#10;Fixed cursor rendering bug">
+      <created>1568385289042</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1568385289042</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Fixed issue where 10's column returned as invalid move">
+      <created>1568386218467</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1568386218467</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68666000" />
+    <option name="totallyTimeSpent" value="71775000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
@@ -457,7 +471,9 @@
     <MESSAGE value="Added '?' to list of valid input characters" />
     <MESSAGE value="Updates to draw_posn to correct scaling factors&#10;Updates to writeAt to allow numbers to be processed&#10;Updated constant names&#10;Fixed rows/columns constant names being swapped&#10;Updated functions to use constants instead of magic #s&#10;Fixed neighbors function&#10;Removed debug log statements" />
     <MESSAGE value="Added play sound functionality;&#10;Began working on end of round messages;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added play sound functionality;&#10;Began working on end of round messages;" />
+    <MESSAGE value="Combined and generalized functions to read input&#10;Added end of game functionality&#10;Fixed cursor rendering bug" />
+    <MESSAGE value="Fixed issue where 10's column returned as invalid move" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed issue where 10's column returned as invalid move" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/META-INF/MANIFEST.MF">
@@ -490,8 +506,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MINEFLD.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="165" column="82" lean-forward="true" selection-start-line="165" selection-start-column="82" selection-end-line="165" selection-end-column="82" />
+        <state relative-caret-position="270">
+          <caret line="408" column="56" selection-start-line="408" selection-start-column="56" selection-end-line="408" selection-end-column="56" />
           <folding>
             <element signature="e#1895#1896#0" expanded="true" />
             <element signature="e#1928#1929#0" expanded="true" />
