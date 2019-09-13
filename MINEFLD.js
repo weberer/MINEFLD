@@ -400,9 +400,9 @@ function get_guess() {
         // Remove first character (stored in row) from choice
         choice = choice.substring(1);
         let choiceFinalChar = choice.charAt(choice.length - 1 );
-        // if the last character of choice is not a digit
 
-        if(!parseInt(choiceFinalChar))
+        // if the last character of choice is not a digit
+        if(choiceFinalChar !== "0" && !parseInt(choiceFinalChar)) // b/c 0 is falsy, need special check for that
             flag = choiceFinalChar.toUpperCase();
 
         column = parseInt(choice);
