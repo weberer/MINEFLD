@@ -4,7 +4,6 @@
     <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MINEFLD.js" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -30,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MINEFLD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="41">
-              <caret line="350" lean-forward="true" selection-start-line="350" selection-end-line="350" />
+            <state relative-caret-position="207">
+              <caret line="165" column="82" lean-forward="true" selection-start-line="165" selection-start-column="82" selection-end-line="165" selection-end-column="82" />
               <folding>
                 <element signature="e#1895#1896#0" expanded="true" />
                 <element signature="e#1928#1929#0" expanded="true" />
@@ -67,15 +66,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>guess</find>
-      <find>run</find>
-      <find>_</find>
-      <find>readAt</find>
-      <find>65</find>
-      <find>startingWritePos</find>
-      <find>=== _enter</find>
-      <find>keypress</find>
-      <find>get_</find>
       <find>addEventListener</find>
       <find>getKey</find>
       <find>console.log</find>
@@ -97,6 +87,15 @@
       <find>sound</find>
       <find>function sound</find>
       <find>show_board</find>
+      <find>read</find>
+      <find>At</find>
+      <find>getInput</find>
+      <find>getinput</find>
+      <find>_INPUT_X_LOCATION</find>
+      <find>x</find>
+      <find>150</find>
+      <find>&quot;_</find>
+      <find>getInput</find>
     </findStrings>
     <replaceStrings>
       <replace>writeln</replace>
@@ -107,6 +106,8 @@
       <replace>row</replace>
       <replace>neighborX</replace>
       <replace>xPos</replace>
+      <replace>xLocation</replace>
+      <replace>_max_score</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -349,7 +350,7 @@
       <updated>1568050412636</updated>
       <workItem from="1568050418136" duration="20789000" />
       <workItem from="1568150472424" duration="10030000" />
-      <workItem from="1568207562470" duration="32944000" />
+      <workItem from="1568207562470" duration="37847000" />
     </task>
     <task id="LOCAL-00001" summary="Created MINEFLD game repository.">
       <created>1568088871465</created>
@@ -393,11 +394,18 @@
       <option name="project" value="LOCAL" />
       <updated>1568258386806</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Added play sound functionality;&#10;Began working on end of round messages;">
+      <created>1568297413561</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1568297413561</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63763000" />
+    <option name="totallyTimeSpent" value="68666000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
@@ -448,7 +456,8 @@
     <MESSAGE value="Updates to get_guess function." />
     <MESSAGE value="Added '?' to list of valid input characters" />
     <MESSAGE value="Updates to draw_posn to correct scaling factors&#10;Updates to writeAt to allow numbers to be processed&#10;Updated constant names&#10;Fixed rows/columns constant names being swapped&#10;Updated functions to use constants instead of magic #s&#10;Fixed neighbors function&#10;Removed debug log statements" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updates to draw_posn to correct scaling factors&#10;Updates to writeAt to allow numbers to be processed&#10;Updated constant names&#10;Fixed rows/columns constant names being swapped&#10;Updated functions to use constants instead of magic #s&#10;Fixed neighbors function&#10;Removed debug log statements" />
+    <MESSAGE value="Added play sound functionality;&#10;Began working on end of round messages;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added play sound functionality;&#10;Began working on end of round messages;" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/META-INF/MANIFEST.MF">
@@ -481,8 +490,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MINEFLD.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="41">
-          <caret line="350" lean-forward="true" selection-start-line="350" selection-end-line="350" />
+        <state relative-caret-position="207">
+          <caret line="165" column="82" lean-forward="true" selection-start-line="165" selection-start-column="82" selection-end-line="165" selection-end-column="82" />
           <folding>
             <element signature="e#1895#1896#0" expanded="true" />
             <element signature="e#1928#1929#0" expanded="true" />

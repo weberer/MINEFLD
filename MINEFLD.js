@@ -17,6 +17,7 @@ const _input_screen_row = 10;
 const _sound_frequency = 220; //Hz
 const _sound_delay = 200;  //mS
 const _sound_type = "square";
+const _max_score = 150;
 
 // display rendering characters
 const char_t = "┬";
@@ -147,6 +148,41 @@ function getKey(callback) {
     document.addEventListener("keydown", keydownCallback , false);
 }
 
+// combines key detection, input validation, submit confirmation and value return from display into one function
+function getInput(xLocation, screenRow, callback) {
+    let startingWritePos = xLocation;
+    let getKeyCallback = function(e) {
+        if(e.code === _enter_key || e.code === _numpad_enter_key)
+            callback(readAt(xLocation,screenRow));
+        else
+        {
+            let alphaNumeric = false;
+            // If more than one letter returned, key is not a char or digit
+            if(e.key.length === 1)
+                alphaNumeric = isAlphaNumeric(e.key.charCodeAt(0));
+
+            if(e.code === _backspace_key) // backspace
+            {
+                // On backspace press, remove previous character if there are characters present
+                if(startingWritePos > xLocation) {
+                    writeAt(startingWritePos--,screenRow, " ");
+                    writeAt(startingWritePos, screenRow, "_");
+                }
+            }
+            else if(alphaNumeric) // 0-9, A-Z, ?
+            {
+                writeAt(startingWritePos++, screenRow, e.key);
+                writeAt(startingWritePos, screenRow, "_");
+            }
+            getKey(getKeyCallback);
+        }
+    };
+    // Show the initial cursor
+    writeAt(xLocation, screenRow, "_");
+    // Begin execution of readInput function
+    getKey(getKeyCallback);
+}
+
 function readAt(xPos, yPos)
 {
     // Get text from line @ yPos
@@ -260,7 +296,7 @@ function drawBoard() {
     // Draw input prompt and cursor
     if(!done) {
         writeAt(_input_x_location, (_input_screen_row - 1), "Move (eg A10X)?");
-        writeAt(_input_x_location, _input_screen_row, "_");
+        //writeAt(_input_x_location, _input_screen_row, "_");
     }
 }
 
@@ -350,41 +386,14 @@ function show_board() {
 }
 
 function get_guess() {
-    let startingWritePos = _input_x_location;
-    let getKeyCallback = function(e) {
-        if(e.code === _enter_key || e.code === _numpad_enter_key)
-            submit();
-        else
-        {
-            let alphaNumeric = false;
-            // If more than one letter returned, key is not a char or digit
-            if(e.key.length === 1)
-                alphaNumeric = isAlphaNumeric(e.key.charCodeAt(0));
-
-            if(e.code === _backspace_key) // backspace
-            {
-                // On backspace press, remove previous character if there are characters present
-                if(startingWritePos > _input_x_location) {
-                    writeAt(startingWritePos--, _input_screen_row, " ");
-                    writeAt(startingWritePos, _input_screen_row, "_");
-                }
-            }
-            else if(alphaNumeric) // 0-9, A-Z, ?
-            {
-                writeAt(startingWritePos++, _input_screen_row, e.key);
-                writeAt(startingWritePos, _input_screen_row, "_");
-            }
-            getKey(getKeyCallback);
-        }
-    };
-
-    var submit = () => {
+    // logic of get_guess function. Takes in input from getInput(x,y);
+    let submit = (choice) => {
         let ok,
             row,
             column,
             flag = " ";
 
-        let choice = readAt(_input_x_location, _input_screen_row);
+        //let choice = readAt(_input_x_location, _input_screen_row);
         // get first character of choice
         let ch = choice.charAt(0).toUpperCase();
 
@@ -440,7 +449,7 @@ function get_guess() {
             }
 
             if (!done) {
-                if(score === 150) {
+                if(score === _max_score) {
                    done = true;
                    endRound();
                 }
@@ -448,13 +457,12 @@ function get_guess() {
                     drawBoard();
                     get_guess();
                 }
-
             }
         }
     };
 
-    // Begin execution of get_guess function
-    getKey(getKeyCallback);
+    // Start method by reading from keyboard.
+    getInput(_input_x_location, _input_screen_row, submit);
 }
 
 function instructions() {
@@ -486,7 +494,7 @@ var startGame = function() {
     instructions();
     while (!done) {
         run();
-        if (score === 150) {
+        if (score === _max_score) {
             clrscr();
             writeln("WELL DONE!");
         }
@@ -503,13 +511,30 @@ var startGame = function() {
 };
 
 function endRound() {
+
+    let processInput = function(input) {
+        input = input.toUpperCase();
+        if(input === 'Y')
+        {
+            clrscr();
+            run();
+        }
+        else if(input === 'N')
+        {
+            clrscr();
+            writeAt(5, 10, "Thanks for the game.  See you again soon...."); //TODO: Check output positioning and text
+        }
+        else
+            getInput(_input_x_location, 14, processInput);
+    };
+
     // Print win message
-    if(score === 150)
-        writeAt(65, 9, "WELL DONE!");
+    if(score === _max_score)
+        writeAt(_input_x_location, 9, "WELL DONE!");
 
     // Prompt to play again
-    writeAt(65, 13, "Play Again?");
-    readAt(65, 14);
+    writeAt(_input_x_location, 13, "Play Again?");
+    getInput(_input_x_location, 14, processInput);
 }
 
 var run = function() {
@@ -536,3 +561,9 @@ document.addEventListener("DOMContentLoaded", function(event)
     instructions();
     getKey(getKeyCallback);
 });
+
+/*
+    BUGS
+    - 10's column is invalid
+    - typing just #s, e.g. 35 crashes the game
+ */
