@@ -1,43 +1,56 @@
 //game constants
-const _screen_columns = 80; //DOS CGA screen width in characters
-const _screen_rows = 25; //DOS CGA screen height in characters
-const _mine_marker = "*";
-const _empty_marker = "█"; // ASCII
-const _line_prefix = "display_line_";
-const _enter_key = "Enter";
-const _numpad_enter_key = "NumpadEnter";
-const _backspace_key = "Backspace";
-const _ascii_a = 64;
-const _ascii_asterisk = _mine_marker.charCodeAt(0);
-const _parent_element = "content";
-const _num_columns = 15;
-const _num_rows = 10;
-const _input_x_location = 65;
-const _input_screen_row = 10;
-const _sound_frequency = 220; //Hz
-const _sound_delay = 200;  //mS
-const _sound_type = "square";
-const _max_score = 150;
+const _ascii_a = 64,
+      _backspace_key = "Backspace",
+      _empty_marker = "█", // ASCII
+      _enter_key = "Enter",
+      _input_x_location = 65,
+      _input_screen_row = 10,
+      _line_prefix = "display_line_",
+      _max_score = 150,
+      _mine_ct = 25,
+      _mine_marker = "*",
+      _num_columns = 15,
+      _num_rows = 10,
+      _numpad_enter_key = "NumpadEnter",
+      _parent_element = "content",
+      _screen_columns = 80, //DOS CGA screen width in characters
+      _screen_rows = 25, //DOS CGA screen height in characters
+      _sound_delay = 200,  //mS
+      _sound_frequency = 220, //Hz
+      _sound_type = "square",
+      _x_offset = 4,
+      _x_scale = 3,
+      _y_offset = 3,
+      _y_scale = 2,
+      _ascii_asterisk = _mine_marker.charCodeAt(0);
+
+//text color constant
+const _text_black = "black", // Pascal text color 0
+      _text_cyan = "cyan", // Pascal text color 3
+      _text_red = "red", // Pascal text color 4
+      _text_white = "white"; // Pascal text color 15
 
 // display rendering characters
-const char_t = "┬";
-const char_dash = "─";
-const char_top_left_corner = "┌";
-const char_top_right_corner = "┐";
-const char_center = "┼";
-const char_bottom_left = "└";
-const char_bottom = "─";
-const char_bottom_center = "┴";
-const char_bottom_right = "┘";
-const char_right = "┤";
-const char_left = "├";
-const cube_top_left = char_top_left_corner + char_dash + char_dash + char_dash;
-const cube_top_right = char_top_right_corner;
-const cube_top = char_t + char_dash + char_dash+ char_dash;
-const cube_left = char_left + char_dash + char_dash + char_dash;
-const cube_center = char_center + char_dash + char_dash + char_dash;
-const cube_bottom_left = char_bottom_left + char_bottom + char_bottom + char_bottom;
-const cube_bottom_center = char_bottom_center + char_bottom + char_bottom + char_bottom;
+const char_bottom = "─",
+      char_bottom_center = "┴",
+      char_bottom_left = "└",
+      char_bottom_right = "┘",
+      char_center = "┼",
+      char_dash = "─",
+      char_left = "├",
+      char_right = "┤",
+      char_t = "┬",
+      char_top_left_corner = "┌",
+      char_top_right_corner = "┐";
+
+// multi character 'glyphs'
+const cube_bottom_center = char_bottom_center + char_bottom + char_bottom + char_bottom,
+      cube_bottom_left = char_bottom_left + char_bottom + char_bottom + char_bottom,
+      cube_center = char_center + char_dash + char_dash + char_dash,
+      cube_left = char_left + char_dash + char_dash + char_dash,
+      cube_top = char_t + char_dash + char_dash+ char_dash,
+      cube_top_left = char_top_left_corner + char_dash + char_dash + char_dash,
+      cube_top_right = char_top_right_corner;
 
 // Globals
 let displayNextWriteLine = 0,
@@ -80,6 +93,7 @@ function createDisplay() {
     parent.innerHTML = html;
 }
 
+// Selects a row/line to read/write from
 function gotoLine(lineNum) {
     if(lineNum === null || lineNum === undefined)
         throw "parameter lineNum must not be null";
@@ -89,10 +103,12 @@ function gotoLine(lineNum) {
     displayNextWriteLine = lineNum;
 }
 
+// Returns row/line currently selected for read/write operations
 function getCurrentLine() {
     return displayNextWriteLine;
 }
 
+// Clears text from all HTML display rows
 function clrscr() {
     // start clearing screen at top
     gotoLine(0);
@@ -101,7 +117,8 @@ function clrscr() {
         writeln("");
 }
 
-function writeln(content, lineNum) { //Tested
+// Writes a line's content to the corresponding display HTML element
+function writeln(content, lineNum) {
     if(lineNum) {
         if (typeof lineNum !== "number")
             throw "lineNum parameter must be of type number";
@@ -122,10 +139,33 @@ function writeln(content, lineNum) { //Tested
         gotoLine (0);
 }
 
+// Adds HTML formatting to a line/row of text
+function formatText(text, displayRow) {
+    // convert text into an array for easier access
+    let charArray = Array.from(text);
+    // calculate yCord of the field/guess array
+    let yCord = (displayRow - _y_offset) / _y_scale;
+
+    if(yCord < _num_rows && yCord >= 0 && Number.isInteger(yCord)) //if yCord is a valid array index
+        for(let xCord = 0; xCord < _num_columns; xCord++) { // loop through every displayColumn in guess
+            let displayColumn = xCord + (xCord * _x_scale) + _x_offset;// Calculate display column from displayColumn
+                charArray[displayColumn] = charArray[displayColumn].fontcolor(guess[yCord][xCord]); // set text color equal to that in the guess array
+        }
+
+    // add blinking effect to the cursor
+    for(let screenColumn = 0; screenColumn < _screen_columns; screenColumn ++ )
+        if(charArray[screenColumn] === "_")
+            charArray[screenColumn] = "_".blink();
+
+    // Combine into single HTML string to display
+    return charArray.join("");
+}
+
+// inserts (writes) text at an xPosition in row yPosition
 function writeAt(xPos, yPos, text) {
     gotoLine(yPos);
     let line = document.getElementById(_line_prefix + yPos);
-    let content = line.innerHTML; // Get text of specified line
+    let content = line.innerText; // Get text of specified line's text (no HTML tags)
 
     // Break content into '3' parts, 1. Port before the new text 2. Part replaced by new text (not saved)
     // 3. Part after new text
@@ -137,9 +177,10 @@ function writeAt(xPos, yPos, text) {
 
     // Combine part 1, text, and part 3. Update line content.
     content = contentBefore + text + contentAfter;
-    line.innerHTML = content;
+    line.innerHTML = formatText(content, yPos); // write innerHTML b/c content may contain HTML tags
 }
 
+// Handles creation, removal and event return for keydown events
 function getKey(callback) {
     let keydownCallback = (e) => {
         document.removeEventListener("keydown", keydownCallback, false);
@@ -187,7 +228,7 @@ function readAt(xPos, yPos)
 {
     // Get text from line @ yPos
     let line = document.getElementById(_line_prefix + yPos);
-    let content = line.innerHTML;
+    let content = line.innerText;
     let contentBefore = content.substr(0, xPos);
 
     // Split content before input location
@@ -203,13 +244,16 @@ function readAt(xPos, yPos)
             inputArr[0] += "_" + inputArr[i];
     }
 
+    // append the cursor character to the line and write to the display
     content = contentBefore + "_";
     gotoLine(yPos);
     writeln(content);
 
-    return inputArr[0];
+    // remove trailing spaces and return user input
+    return inputArr[0].split(" ")[0];
 }
 
+// Creates a 2D array object
 function create2dArray(x, y) {
     let returnArray = [];
     let tempArr = [];
@@ -277,65 +321,61 @@ function neighbors() {
             }
 }
 
+// Loops through the guess array, and draws squares that have already been guessed
+function draw_posn() {
+    for (let y = 0; y < _num_rows; y++)
+        for (let x = 0; x < _num_columns; x++)
+            if (guess[y][x] !== _text_black)
+                writeAt((x + (x * _x_scale) + _x_offset), (y * _y_scale + _y_offset), field[y][x]);
+}
+
 function drawBoard() {
     clrscr();
+    // Draw HUD, numbers and top row of the grid
     writeln("     There are " + mine_ct + " mines.   SCORE : " + score + " [MAX 150]");
     writeln("    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15");
     writeln("  " + cube_top_left + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top + cube_top_right);
 
+    // draw middle rows of the grid
     for (let i = 1; i <= _num_rows; i++) {
-        writeln(String.fromCharCode(_ascii_a + i) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │");
+        writeln(String.fromCharCode(_ascii_a + i) + " │   │   │   │   │   │   │   │   │   │   │   │   │   │   │   │"); // this row will contain the symbols for mines etc.
         writeln("  " + cube_left + cube_center + cube_center + cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center+ cube_center + char_right);
     }
 
+    // draw the bottom row of the grid
     gotoLine(getCurrentLine() -1 );
     writeln("  " + cube_bottom_left + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center + cube_bottom_center  + char_bottom_right);
 
-    draw_posn();
+    draw_posn(); // draw squares that have been guessed
     neighbors();
-    // Draw input prompt and cursor
+    // Draw input prompt
     if(!done) {
         writeAt(_input_x_location, (_input_screen_row - 1), "Move (eg A10X)?");
-        //writeAt(_input_x_location, _input_screen_row, "_");
     }
 }
-
-var draw_posn = function() {
-    // Offsets to position characters in the center of grids
-    const _x_offset = 4,
-          _x_scale = 3,
-          _y_offset = 3,
-          _y_scale = 2;
-
-
-    for (let y = 0; y < _num_rows; y++) {
-        for (let x = 0; x < _num_columns; x++) {
-            if (guess[y][x] !== 0) {
-                writeAt((x + (x * _x_scale) + _x_offset), (y * _y_scale + _y_offset), field[y][x]); //TODO: Add ability to color text
-            }
-        }
-    }
-};
-
 // Places mine_ct mines randomly around the board
 function seed_mines() {
+    // fill the field with empty squared
     for (let i = 0; i < _num_rows; i++) {
         for (let j = 0; j < _num_columns; j++) {
             field[i][j] = " ";
         }
     }
 
+    // fill guess array with empty squares
     for (let i = 0; i < _num_rows; i++) {
         for (let j = 0; j < _num_columns; j++) {
-            guess[i][j] = 0;
+            guess[i][j] = _text_black;
         }
     }
 
+    // fill the board with mines
     for (let i = 0; i < mine_ct; i++) {
+        // Pick a random location for a mine
         let x = getRandom(0, _num_rows),
             y = getRandom(0, _num_columns);
-        while (field[x][y] !== ' ') {
-            x = getRandom(0, _num_rows);
+        while (field[x][y] !== ' ') { // If the guessed location has a mine, pick another location until
+            x = getRandom(0, _num_rows); // a valid location is found
             y = getRandom(0, _num_columns);
         }
         field[x][y] = "*";
@@ -348,25 +388,25 @@ function check_empty(yPos, xPos) {
         score++;
         let none = false;
         while (!none) {
-            guess[yPos][xPos] = 3;
+            guess[yPos][xPos] = _text_cyan;
             none = true;
             if (field[yPos][xPos] === _empty_marker) {
                 none = false;
-                if ((yPos - 1 >= 0) && (xPos + 1 < _num_columns) && guess[yPos - 1][xPos + 1] === 0)
+                if ((yPos - 1 >= 0) && (xPos + 1 < _num_columns) && guess[yPos - 1][xPos + 1] === _text_black)
                     check_empty(yPos - 1, xPos + 1);
-                if ((yPos - 1 >= 0) && guess[yPos - 1][xPos] === 0)
+                if ((yPos - 1 >= 0) && guess[yPos - 1][xPos] === _text_black)
                     check_empty(yPos - 1, xPos);
-                if ((yPos - 1 >= 0) && (xPos - 1 >= 0) && guess[yPos - 1][xPos - 1] === 0)
+                if ((yPos - 1 >= 0) && (xPos - 1 >= 0) && guess[yPos - 1][xPos - 1] === _text_black)
                     check_empty(yPos - 1, xPos - 1);
-                if ((xPos + 1 < _num_columns) && guess[yPos][xPos + 1] === 0)
+                if ((xPos + 1 < _num_columns) && guess[yPos][xPos + 1] === _text_black)
                     check_empty(yPos, xPos + 1);
-                if ((xPos - 1 >= 0) && guess[yPos][xPos - 1] === 0)
+                if ((xPos - 1 >= 0) && guess[yPos][xPos - 1] === _text_black)
                     check_empty(yPos, xPos - 1);
-                if ((yPos + 1 < _num_rows) && (xPos - 1 >= 0) && guess[yPos + 1][xPos - 1] === 0)
+                if ((yPos + 1 < _num_rows) && (xPos - 1 >= 0) && guess[yPos + 1][xPos - 1] === _text_black)
                     check_empty(yPos + 1, xPos - 1);
-                if ((yPos + 1 < _num_rows) && guess[yPos + 1][xPos] === 0)
+                if ((yPos + 1 < _num_rows) && guess[yPos + 1][xPos] === _text_black)
                     check_empty(yPos + 1, xPos);
-                if ((yPos + 1 < _num_rows) && (xPos + 1 < _num_columns) && guess[yPos + 1][xPos + 1] === 0)
+                if ((yPos + 1 < _num_rows) && (xPos + 1 < _num_columns) && guess[yPos + 1][xPos + 1] === _text_black)
                     check_empty(yPos + 1, xPos + 1);
                 none = !none;
             }
@@ -374,12 +414,12 @@ function check_empty(yPos, xPos) {
     }
 }
 
-// Shows the entire board
+// Shows the entire board, even if not guessed
 function show_board() {
     for (let i = 0; i < _num_rows; i++)
         for (let j = 0; j < _num_columns; j++)
-            if (guess[i][j] === 0)
-                guess[i][j] = 15;
+            if (guess[i][j] === _text_black)
+                guess[i][j] = _text_white;
 
     drawBoard();
     endRound();
@@ -406,31 +446,32 @@ function get_guess() {
             flag = choiceFinalChar.toUpperCase();
 
         column = parseInt(choice);
-        if(column.toString().length + 1 < choice.length)
-            column = 100;
-        else column--;
+        if(column.toString().length + 1 < choice.length) //if column contained extra letters, the length of the # will
+            column = 100;                                // be less than expected
+        else column--; // aligns column with the field/guess grid
 
         if(ch.charCodeAt(0) > _ascii_a)
             row = ch.charCodeAt(0) - _ascii_a - 1; //Subtract 1 more than a to align with array 0 index
         else
             row = 100;
 
-        ok = (flag === " " || flag === "?" || flag === "M")  && row > -1 && row <= _num_rows && column > -1 && column <= _num_columns && guess[row][column] === 0;
-        if(!ok)
-            sound();
+        // determine if user input is valid
+        ok = (flag === " " || flag === "?" || flag === "M")  && row > -1 && row <= _num_rows && column > -1 && column <= _num_columns && guess[row][column] === _text_black;
 
-        if(!ok)
-            get_guess();
+        if(!ok) {
+            sound();
+            get_guess(); // if not valid guess again
+        }
         else {
-            guess[row][column] = 3;
+            guess[row][column] = _text_cyan; // set default guess color
 
             switch (flag) {
                 case " ":
                     if (field[row][column] === String.fromCharCode(_ascii_asterisk)) {
-                        done = true;
+                        done = true; // end game if player hit a mine without flagging it
                         show_board();
                     } else
-                        check_empty(row, column);
+                        check_empty(row, column); // show neighboring cells around 'empty' cells
                     break;
 
                 case "?":
@@ -439,21 +480,22 @@ function get_guess() {
 
                 case "M":
                     if (field[row][column] !== String.fromCharCode(_ascii_asterisk)) {
-                        done = true;
+                        done = true; // end game if incorrect mine guess
                         show_board();
                     } else {
                         score++;
-                        guess[row][column] = 4;
+                        guess[row][column] = _text_red; // if correct guess, color mine
                     }
                     break;
             }
 
             if (!done) {
+                // if max_score reached, game is complete
                 if(score === _max_score) {
                    done = true;
                    endRound();
                 }
-                else {
+                else { // otherwise player guesses again
                     drawBoard();
                     get_guess();
                 }
@@ -465,6 +507,7 @@ function get_guess() {
     getInput(_input_x_location, _input_screen_row, submit);
 }
 
+// Prints instruction/welcome screen
 function instructions() {
     clrscr();
 
@@ -487,45 +530,22 @@ function instructions() {
     writeln("squares correctly.");
     writeln();
     writeln("  Press &ltENTER&gt to continue.  Good luck!");
-};
+}
 
-var startGame = function() {
-    clrscr();
-    instructions();
-    while (!done) {
-        run();
-        if (score === _max_score) {
-            clrscr();
-            writeln("WELL DONE!");
-        }
-        writeln("Play again?");
-        while (ch !== 'Y' && ch !== 'N') {
-            //read key;
-            //uppercase input
-        }
-        writeln(ch);
-        done = (ch === 'N');
-    }
-    clrscr();
-    writeln("Thanks for the game.  See you again soon....");
-};
-
+// Displays end of round message and processes user response
 function endRound() {
-
-    let processInput = function(input) {
-        input = input.toUpperCase();
+    let processInput = function(keyEvent) {
+        let input = keyEvent.key.toUpperCase();
         if(input === 'Y')
-        {
-            clrscr();
             run();
-        }
         else if(input === 'N')
         {
+            // Create 'goodbye' screen
             clrscr();
-            writeAt(5, 10, "Thanks for the game.  See you again soon...."); //TODO: Check output positioning and text
+            writeAt(5, 10, "Thanks for the game.  See you again soon....");
         }
         else
-            getInput(_input_x_location, 14, processInput);
+            getKey(processInput);
     };
 
     // Print win message
@@ -533,24 +553,27 @@ function endRound() {
         writeAt(_input_x_location, 9, "WELL DONE!");
 
     // Prompt to play again
-    writeAt(_input_x_location, 13, "Play Again?");
-    getInput(_input_x_location, 14, processInput);
+    writeAt(_input_x_location, 13, "Play Again? " + "_");
+    getKey(processInput);
 }
 
-var run = function() {
+// Starts a round of the game
+function run() {
     score = 0;
-    mine_ct = 25;
+    mine_ct = _mine_ct;
     done = false;
-    field = create2dArray(10, 15);
-    guess = create2dArray(10, 15);
+    field = create2dArray(_num_columns, _num_rows);
+    guess = create2dArray(_num_columns, _num_rows);
+    console.log(guess);
+    console.log(field);
+    clrscr();
     seed_mines();
     drawBoard();
     get_guess();
-};
+}
 
 //Begin game after document is loaded.
-document.addEventListener("DOMContentLoaded", function(event)
-{
+document.addEventListener("DOMContentLoaded", function() {
     let getKeyCallback = function(e) {
         if(e.code === _enter_key || e.code === _numpad_enter_key)
             run();
@@ -561,9 +584,3 @@ document.addEventListener("DOMContentLoaded", function(event)
     instructions();
     getKey(getKeyCallback);
 });
-
-/*
-    BUGS
-    - 10's column is invalid
-    - typing just #s, e.g. 35 crashes the game
- */

@@ -22,3 +22,19 @@ body {
     align-content: center;
     justify-content: center;
 }
+
+blink {
+    animation: 0.25s linear infinite blink_effect;
+}
+
+@keyframes blink_effect {
+    0% {
+        visibility: hidden;
+    }
+    50% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: visible;
+    }
+}

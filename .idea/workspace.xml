@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="Fixed issue allowing">
+    <list default="true" id="2609b3b2-e60b-4c29-9ce2-4ee1922d54f3" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MINEFLD.css" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MINEFLD.js" beforeDir="false" afterPath="$PROJECT_DIR$/MINEFLD.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -29,16 +30,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MINEFLD.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="408" column="56" selection-start-line="408" selection-start-column="56" selection-end-line="408" selection-end-column="56" />
-              <folding>
-                <element signature="e#1895#1896#0" expanded="true" />
-                <element signature="e#1928#1929#0" expanded="true" />
-                <element signature="e#2101#2102#0" expanded="true" />
-                <element signature="e#2161#2162#0" expanded="true" />
-                <element signature="e#1895#1896#0" expanded="true" />
-                <element signature="e#1930#1931#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="369">
+              <caret line="97" column="49" lean-forward="true" selection-start-line="97" selection-start-column="49" selection-end-line="97" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -46,8 +39,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/MINEFLD.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+            <state relative-caret-position="525">
+              <caret line="25" column="7" selection-start-line="25" selection-start-column="7" selection-end-line="25" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -66,23 +59,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getKey</find>
-      <find>console.log</find>
-      <find>get_gu</find>
-      <find>submit</find>
-      <find>ch</find>
-      <find>lr</find>
-      <find>45</find>
-      <find>15</find>
-      <find>64</find>
-      <find>10</find>
-      <find>42</find>
-      <find>jj</find>
-      <find>field[i][j] =</find>
-      <find>write</find>
-      <find>writeAt</find>
-      <find>rl</find>
-      <find>todo</find>
       <find>sound</find>
       <find>function sound</find>
       <find>show_board</find>
@@ -94,8 +70,25 @@
       <find>x</find>
       <find>150</find>
       <find>&quot;_</find>
-      <find>getInput</find>
       <find>choice =</find>
+      <find>innerHTML</find>
+      <find>] = \d</find>
+      <find>0</find>
+      <find>= 0</find>
+      <find>drawboard</find>
+      <find>writeat</find>
+      <find>todo</find>
+      <find>red</find>
+      <find>_text_cyan</find>
+      <find>3</find>
+      <find>7</find>
+      <find>4</find>
+      <find>guess\[\w+\]\[\w+\]\W?=</find>
+      <find>guess\[.*\]\[.*\]\W?=</find>
+      <find>getKey</find>
+      <find>innerHtml</find>
+      <find>isalphanumeric</find>
+      <find>[0].s</find>
     </findStrings>
     <replaceStrings>
       <replace>writeln</replace>
@@ -108,6 +101,7 @@
       <replace>xPos</replace>
       <replace>xLocation</replace>
       <replace>_max_score</replace>
+      <replace>xCord</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -119,8 +113,8 @@
       <list>
         <option value="$PROJECT_DIR$/MINEFLD.html" />
         <option value="$PROJECT_DIR$/MINEFLD.ts" />
-        <option value="$PROJECT_DIR$/MINEFLD.css" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/MINEFLD.css" />
         <option value="$PROJECT_DIR$/MINEFLD.js" />
       </list>
     </option>
@@ -139,10 +133,10 @@
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="951" />
-    <option name="y" value="41" />
-    <option name="width" value="978" />
-    <option name="height" value="1048" />
+    <option name="x" value="-10" />
+    <option name="y" value="51" />
+    <option name="width" value="820" />
+    <option name="height" value="459" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -150,8 +144,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -350,7 +344,8 @@
       <updated>1568050412636</updated>
       <workItem from="1568050418136" duration="20789000" />
       <workItem from="1568150472424" duration="10030000" />
-      <workItem from="1568207562470" duration="40956000" />
+      <workItem from="1568207562470" duration="50773000" />
+      <workItem from="1568407909619" duration="2190000" />
     </task>
     <task id="LOCAL-00001" summary="Created MINEFLD game repository.">
       <created>1568088871465</created>
@@ -415,17 +410,24 @@
       <option name="project" value="LOCAL" />
       <updated>1568386218467</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Fixed issue in recognizing invalid input containing valid coordinate and 2 flags">
+      <created>1568391469926</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1568391469926</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="71775000" />
+    <option name="totallyTimeSpent" value="83782000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="33" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0852349" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.08590604" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -434,7 +436,7 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.33571428" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.08571429" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -473,7 +475,8 @@
     <MESSAGE value="Added play sound functionality;&#10;Began working on end of round messages;" />
     <MESSAGE value="Combined and generalized functions to read input&#10;Added end of game functionality&#10;Fixed cursor rendering bug" />
     <MESSAGE value="Fixed issue where 10's column returned as invalid move" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed issue where 10's column returned as invalid move" />
+    <MESSAGE value="Fixed issue in recognizing invalid input containing valid coordinate and 2 flags" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed issue in recognizing invalid input containing valid coordinate and 2 flags" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/META-INF/MANIFEST.MF">
@@ -499,23 +502,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MINEFLD.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="4" column="19" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
+        <state relative-caret-position="525">
+          <caret line="25" column="7" selection-start-line="25" selection-start-column="7" selection-end-line="25" selection-end-column="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MINEFLD.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="408" column="56" selection-start-line="408" selection-start-column="56" selection-end-line="408" selection-end-column="56" />
-          <folding>
-            <element signature="e#1895#1896#0" expanded="true" />
-            <element signature="e#1928#1929#0" expanded="true" />
-            <element signature="e#2101#2102#0" expanded="true" />
-            <element signature="e#2161#2162#0" expanded="true" />
-            <element signature="e#1895#1896#0" expanded="true" />
-            <element signature="e#1930#1931#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="369">
+          <caret line="97" column="49" lean-forward="true" selection-start-line="97" selection-start-column="49" selection-end-line="97" selection-end-column="49" />
         </state>
       </provider>
     </entry>
